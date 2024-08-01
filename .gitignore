@@ -6,3 +6,10 @@ JCudaVec/target/
 /JCudaSamples/target
 /JCudaSamples/src/main/resources/kernels/*.cubin
 /JCudaSamples/src/main/resources/kernels/*.ptx
+*/.idea/
+.idea
+/target/**
+/target
+target
+target/
+target/**

@@ -5,70 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e018aa22-ebed-4b29-a258-20578bbbde6e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/CudaLWJGLOptionPricer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/HelloCUDA.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/CudaOptionPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/CudaOptionPricer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/gl/samples/JCudaDriverSimpleJOGL.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/gl/samples/JCudaDriverSimpleLWJGL.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/gl/samples/JCudaDriverVolumeRendererJOGL.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/gl/samples/SimpleInteraction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaAllocationInKernel.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaConstantMemoryExample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaDeviceQueryV8.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaDriverBasicGraphExample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaDriverBasicStreamCallback.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaDriverHostFunction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaDriverStreamCallbacks.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaDriverUnifiedMemory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaDynamicParallelism.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaReduction.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/driver/samples/JCudaVectorAdd.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcublas/samples/JCublas2MatrixInvert.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcublas/samples/JCublas2PointerModes.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcublas/samples/JCublas2Sample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcublas/samples/JCublas2SgemmBatched.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcublas/samples/JCublas2SgemmExSample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcudnn/samples/JCudnnMnist.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcudnn/samples/JCudnnMnistUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcudnn/samples/JCudnnRnnExample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcufft/samples/JCufftSample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcurand/samples/JCurandSample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/jcusolver/samples/JCusolverDn_LinearSolver_Direct.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/nvrtc/samples/JNvrtcLoweredNames.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/nvrtc/samples/JNvrtcVectorAdd.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/runtime/samples/JCudaPrintDeviceInfo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/runtime/samples/JCudaRuntimeAsyncCopies.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/runtime/samples/JCudaRuntimeBasicStreamCallback.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/runtime/samples/JCudaRuntimeMappedMemory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/runtime/samples/JCudaRuntimeMemoryBandwidths.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/runtime/samples/JCudaRuntimeUnifiedMemory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/vec/samples/VecDoubleSample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jcuda/vec/samples/VecFloatSample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/driver/gl/Bucky.raw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/conv1.bias.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/conv1.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/conv2.bias.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/conv2.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/five_28x28.pgm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/ip1.bias.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/ip1.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/ip2.bias.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/ip2.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/one_28x28.pgm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcudnn/mnist/three_28x28.pgm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcusolver/gr_900_900_crg.mtx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcusolver/lap2D_5pt_n100.mtx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/jcusolver/lap3D_7pt_n20.mtx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/JCudaAllocationInKernelKernel.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/JCudaConstantMemoryKernel.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/JCudaDriverSimpleGLKernel.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/JCudaDriverVolumeRendererKernel.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/JCudaDynamicParallelismKernel.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/JCudaReductionKernel.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/JCudaVectorAddKernel.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/JCudaVectorAddKernel.ptx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/helper_math.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/BenchMarkingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/BenchMarkingTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/CudaLWJGLOptionPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/CudaLWJGLOptionPricer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/OptionPricingKernel.cu" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/kernels/OptionPricingKernel.cu" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,23 +39,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.BenchMarkingTest.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.JCudaPrintDeviceInfo.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.JCudaVectorAdd.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.JCusolverDn_LinearSolver_Direct.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.JNvrtcVectorAdd.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Dev/jcuda-samples/src&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.BenchMarkingTest.executor": "Debug",
+    "Application.HelloCUDA.executor": "Debug",
+    "Application.JCudaPrintDeviceInfo.executor": "Debug",
+    "Application.JCudaVectorAdd.executor": "Debug",
+    "Application.JCusolverDn_LinearSolver_Direct.executor": "Debug",
+    "Application.JNvrtcVectorAdd.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Dev/jcuda-samples/src",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.new.ui"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Dev\jcuda-samples\src" />
@@ -135,12 +77,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="JCudaPrintDeviceInfo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="jcuda.runtime.samples.JCudaPrintDeviceInfo" />
+    <configuration name="HelloCUDA" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="benchmark.HelloCUDA" />
       <module name="jcuda-samples" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="jcuda.runtime.samples.*" />
+          <option name="PATTERN" value="benchmark.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -189,19 +131,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.HelloCUDA" />
       <item itemvalue="Application.BenchMarkingTest" />
       <item itemvalue="Application.JCudaVectorAdd" />
-      <item itemvalue="Application.JCudaPrintDeviceInfo" />
       <item itemvalue="Application.JCusolverDn_LinearSolver_Direct" />
       <item itemvalue="Application.JNvrtcVectorAdd" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.BenchMarkingTest" />
+        <item itemvalue="Application.HelloCUDA" />
         <item itemvalue="Application.JCudaVectorAdd" />
         <item itemvalue="Application.JCusolverDn_LinearSolver_Direct" />
         <item itemvalue="Application.JNvrtcVectorAdd" />
-        <item itemvalue="Application.JCudaPrintDeviceInfo" />
       </list>
     </recent_temporary>
   </component>

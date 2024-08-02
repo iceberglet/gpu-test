@@ -87,12 +87,9 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
                     ByteBuffer log = stack.malloc((int)pp.get(0) - 1);
 
                     checkNVRTC(nvrtcGetProgramLog(program, log));
-
-//                    StringBuilder builder = new StringBuilder();
-//                    while(log.hasRemaining()) {
-//                        builder.append(log.getChar());
-//                    }
-//                    System.out.println(builder);
+                    System.err.println("Compilation log:");
+                    System.err.println("----------------");
+                    System.err.println(memASCII(log));
                 }
             }
             checkNVRTC(compilationStatus);
@@ -159,16 +156,7 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
     long cudaStrikes;
     long cudaVols;
     long cudaRates;
-
-    long cudaNowMs;
-    long cudaNumOpts;
-    long cudaFwdPx;
-
     long cudaFairPxOut;
-
-    LongBuffer nowTimeMs;
-    DoubleBuffer fwdPxBuffer;
-    IntBuffer numOptions;
     DoubleBuffer fairPxOut;
 
 
@@ -183,17 +171,14 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
         DoubleBuffer vols = memAllocDouble(size);
         DoubleBuffer rates = memAllocDouble(size);
         fairPxOut = memAllocDouble(size);
-        nowTimeMs = memAllocLong(1);
-        fwdPxBuffer = memAllocDouble(1);
-        numOptions = memAllocInt(1);
 
-        numOptions.put(options.size());
-        for (final OptionInst inst : options) {
-            expiries.put(inst.expiryMs);
-            strikes.put(inst.strike);
-            isCalls.put((byte) (inst.isCall ? 1 : 0));
-            vols.put(vol);
-            rates.put(rate);
+        for (int i = 0; i < options.size(); ++i) {
+            final var inst = options.get(i);
+            expiries.put(i, inst.expiryMs);
+            strikes.put(i, inst.strike);
+            isCalls.put(i, (byte) (inst.isCall ? 1 : 0));
+            vols.put(i, vol);
+            rates.put(i, rate);
         }
 
         check(cuMemAlloc(pp, Long.BYTES * size));
@@ -209,29 +194,15 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
         check(cuMemAlloc(pp, Double.BYTES * size));
         cudaFairPxOut = pp.get(0);
 
-
-        check(cuMemAlloc(pp, Long.BYTES * 1));
-        cudaNowMs = pp.get(0);
-        check(cuMemAlloc(pp, Double.BYTES * 1));
-        cudaFwdPx = pp.get(0);
-        check(cuMemAlloc(pp, Integer.BYTES * 1));
-        cudaNumOpts = pp.get(0);
-
         check(cuMemcpyHtoD(cudaExpiries, expiries));
         check(cuMemcpyHtoD(cudaIsCalls, isCalls));
         check(cuMemcpyHtoD(cudaStrikes, strikes));
         check(cuMemcpyHtoD(cudaVols, vols));
         check(cuMemcpyHtoD(cudaRates, rates));
-        check(cuMemcpyHtoD(cudaNumOpts, numOptions));
     }
 
     @Override
     public List<Double> price(double fwdPx, long timeMs) {
-
-        nowTimeMs.clear().put(timeMs);
-        fwdPxBuffer.clear().put(fwdPx);
-        check(cuMemcpyHtoD(cudaNowMs, nowTimeMs));
-        check(cuMemcpyHtoD(cudaFwdPx, fwdPxBuffer));
 
         try (MemoryStack stack = stackPush()) {
             // grid for kernel: <<<N, 1>>>
@@ -243,14 +214,14 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
                     0, 0,
                     // method 1: unpacked (simple, no alignment requirements)
                     stack.pointers(
-                            memAddress(stack.longs(cudaNumOpts)),
-                            memAddress(stack.longs(cudaNowMs)),
+                            memAddress(stack.ints(options.size())),
+                            memAddress(stack.longs(timeMs)),
                             memAddress(stack.longs(cudaExpiries)),
                             memAddress(stack.longs(cudaVols)),
                             memAddress(stack.longs(cudaRates)),
                             memAddress(stack.longs(cudaStrikes)),
                             memAddress(stack.longs(cudaIsCalls)),
-                            memAddress(stack.longs(cudaFwdPx)),
+                            memAddress(stack.doubles(fwdPx)),
                             memAddress(stack.longs(cudaFairPxOut))
                     ),
                     null/*,

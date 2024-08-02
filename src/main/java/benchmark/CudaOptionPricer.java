@@ -85,7 +85,6 @@ public class CudaOptionPricer implements OptionPricer {
     public void loadOptions(List<OptionInst> options, final double vol, final double rate) {
         this.options = options;
         final int numOptions = options.size();
-        final List<Double> result = new ArrayList<>(numOptions);
         if(numOptions > maxOptions) {
             throw new IllegalArgumentException("Too many options! need to re-allocate memory!");
         }

@@ -15,7 +15,7 @@ public class OpenGLPricer implements OptionPricer {
     }
 
     @Override
-    public List<Double> price(double fwdPx, long timeMs) {
-        return List.of();
+    public double[] price(double fwdPx, long timeMs) {
+        return null;
     }
 }

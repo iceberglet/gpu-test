@@ -10,6 +10,7 @@ import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.charset.StandardCharsets;
@@ -21,6 +22,7 @@ import java.util.List;
 import static org.lwjgl.cuda.CU.CUDA_SUCCESS;
 import static org.lwjgl.cuda.CU.cuCtxCreate;
 import static org.lwjgl.cuda.CU.cuCtxDetach;
+import static org.lwjgl.cuda.CU.cuCtxSynchronize;
 import static org.lwjgl.cuda.CU.cuDeviceComputeCapability;
 import static org.lwjgl.cuda.CU.cuDeviceGet;
 import static org.lwjgl.cuda.CU.cuDeviceGetCount;
@@ -49,7 +51,7 @@ import static org.lwjgl.system.MemoryUtil.memASCII;
 import static org.lwjgl.system.MemoryUtil.memAddress;
 import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memAllocDouble;
-import static org.lwjgl.system.MemoryUtil.memAllocInt;
+import static org.lwjgl.system.MemoryUtil.memAllocFloat;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 
 
@@ -157,41 +159,45 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
     long cudaVols;
     long cudaRates;
     long cudaFairPxOut;
-    DoubleBuffer fairPxOut;
+    FloatBuffer fairPxOut;
+    LongBuffer timeOut;
+    double[] result;
 
 
     @Override
     public void loadOptions(List<OptionInst> options, double vol, double rate) {
         this.options = options;
         final int size = options.size();
+        result = new double[size];
 
         LongBuffer expiries = memAllocLong(size);
         ByteBuffer isCalls = memAlloc(size);
-        DoubleBuffer strikes = memAllocDouble(size);
-        DoubleBuffer vols = memAllocDouble(size);
-        DoubleBuffer rates = memAllocDouble(size);
-        fairPxOut = memAllocDouble(size);
+        FloatBuffer strikes = memAllocFloat(size);
+        FloatBuffer vols = memAllocFloat(size);
+        FloatBuffer rates = memAllocFloat(size);
+        fairPxOut = memAllocFloat(size);
+        timeOut = memAllocLong(size);
 
         for (int i = 0; i < options.size(); ++i) {
             final var inst = options.get(i);
             expiries.put(i, inst.expiryMs);
-            strikes.put(i, inst.strike);
+            strikes.put(i, (float)inst.strike);
             isCalls.put(i, (byte) (inst.isCall ? 1 : 0));
-            vols.put(i, vol);
-            rates.put(i, rate);
+            vols.put(i, (float)vol);
+            rates.put(i, (float)rate);
         }
 
         check(cuMemAlloc(pp, Long.BYTES * size));
         cudaExpiries = pp.get(0);
         check(cuMemAlloc(pp, Byte.BYTES * size));
         cudaIsCalls = pp.get(0);
-        check(cuMemAlloc(pp, Double.BYTES * size));
+        check(cuMemAlloc(pp, Float.BYTES * size));
         cudaStrikes = pp.get(0);
-        check(cuMemAlloc(pp, Double.BYTES * size));
+        check(cuMemAlloc(pp, Float.BYTES * size));
         cudaVols = pp.get(0);
-        check(cuMemAlloc(pp, Double.BYTES * size));
+        check(cuMemAlloc(pp, Float.BYTES * size));
         cudaRates = pp.get(0);
-        check(cuMemAlloc(pp, Double.BYTES * size));
+        check(cuMemAlloc(pp, Float.BYTES * size));
         cudaFairPxOut = pp.get(0);
 
         check(cuMemcpyHtoD(cudaExpiries, expiries));
@@ -202,11 +208,10 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
     }
 
     @Override
-    public List<Double> price(double fwdPx, long timeMs) {
-
+    public double[] price(double fwdPx, long timeMs) {
         try (MemoryStack stack = stackPush()) {
             // grid for kernel: <<<N, 1>>>
-            int blockSizeX = 256;
+            int blockSizeX = 16;
             int gridSizeX = (int)Math.ceil((double)options.size() / blockSizeX);
             check(cuLaunchKernel(function,
                     gridSizeX, 1, 1,  // Nx1x1 blocks
@@ -221,7 +226,7 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
                             memAddress(stack.longs(cudaRates)),
                             memAddress(stack.longs(cudaStrikes)),
                             memAddress(stack.longs(cudaIsCalls)),
-                            memAddress(stack.doubles(fwdPx)),
+                            memAddress(stack.floats((float) fwdPx)),
                             memAddress(stack.longs(cudaFairPxOut))
                     ),
                     null/*,
@@ -237,12 +242,14 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
                 )*/));
         }
 
-        List<Double> result = new ArrayList<>(options.size());
         // copy results to host and report
         fairPxOut.clear();
+//        timeOut.clear();
         check(cuMemcpyDtoH(fairPxOut, cudaFairPxOut));
+//        check(cuMemcpyDtoH(timeOut, cudaTimeOut));
         for (int i = 0; i < options.size(); ++i) {
-            result.add(fairPxOut.get());
+            result[i] = fairPxOut.get();
+//            time[i] = timeOut.get();
         }
 
         // finish

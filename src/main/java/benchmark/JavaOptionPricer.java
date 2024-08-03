@@ -24,30 +24,34 @@ public class JavaOptionPricer implements OptionPricer {
     private List<OptionInst> options;
     private double vol;
     private double rate;
+    private double[] result;
 
     @Override
     public void loadOptions(List<OptionInst> options, double vol, double rate) {
         this.options = options;
         this.vol = vol;
         this.rate = rate;
+        result = new double[options.size()];
     }
 
     @Override
-    public List<Double> price(double fwdPx, long timeMs) {
-        List<Double> result = new ArrayList<>();
-        for(final var option : options) {
-            final double tte = (double)(option.expiryMs - timeMs) / MS_IN_YEAR;
-            final double scaledVol = vol * FastMath.sqrt(tte);
-            final double d1 = FastMath.log(fwdPx / option.strike) / scaledVol + scaledVol / 2;
-            final double d2 = d1 - scaledVol;
-            final double discount = FastMath.exp(-1 * rate * tte);
-            final double fairPx;
-            if(option.isCall) {
-                fairPx = discount * (getCdfStd(d1) - getCdfStd(d2) * option.strike / fwdPx);
-            } else {
-                fairPx = discount * (getCdfStd(-d2) * option.strike / fwdPx - getCdfStd(-d1));
+    public double[] price(double fwdPx, long timeMs) {
+        for(int x = 0; x < result.length; ++x) {
+            final var option = options.get(x);
+            double fairPx = Double.NaN;
+            for(int i = 0; i < 130; ++i) {
+                final double tte = (double)(option.expiryMs - timeMs) / MS_IN_YEAR;
+                final double scaledVol = vol * FastMath.sqrt(tte);
+                final double d1 = FastMath.log(fwdPx / option.strike) / scaledVol + scaledVol / 2;
+                final double d2 = d1 - scaledVol;
+                final double discount = FastMath.exp(-1 * rate * tte);
+                if(option.isCall) {
+                    fairPx = discount * (getCdfStd(d1) - getCdfStd(d2) * option.strike / fwdPx);
+                } else {
+                    fairPx = discount * (getCdfStd(-d2) * option.strike / fwdPx - getCdfStd(-d1));
+                }
             }
-            result.add(fairPx);
+            result[x] = fairPx;
         }
         return result;
     }

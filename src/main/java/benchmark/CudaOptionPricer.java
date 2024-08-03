@@ -80,6 +80,7 @@ public class CudaOptionPricer implements OptionPricer {
     }
 
     private List<OptionInst> options;
+    private double[] result;
 
     @Override
     public void loadOptions(List<OptionInst> options, final double vol, final double rate) {
@@ -89,6 +90,7 @@ public class CudaOptionPricer implements OptionPricer {
             throw new IllegalArgumentException("Too many options! need to re-allocate memory!");
         }
 
+        result = new double[numOptions];
         for(int i = 0; i < options.size(); i++)
         {
             final var inst = options.get(i);
@@ -104,39 +106,28 @@ public class CudaOptionPricer implements OptionPricer {
         cuMemcpyHtoD(isCallInput, Pointer.to(isCall), numOptions * Sizeof.BYTE);
         cuMemcpyHtoD(volInput, Pointer.to(vols), numOptions * Sizeof.DOUBLE);
         cuMemcpyHtoD(rateInput, Pointer.to(rates), numOptions * Sizeof.DOUBLE);
+        numOptionsArr[0] = numOptions;
     }
 
+    private final int[] numOptionsArr = new int[1];
+    private final long[] timeMsArr = new long[1];
+    private final double[] fwdPxArr = new double[1];
+
     @Override
-    public List<Double> price(double fwdPx, long timeMs) {
+    public double[] price(double fwdPx, long timeMs) {
         final int numOptions = options.size();
-        final List<Double> result = new ArrayList<>(numOptions);
+        timeMsArr[0] = timeMs;
+        fwdPxArr[0] = fwdPx;
 
-//        for(int i = 0; i < options.size(); i++)
-//        {
-//            fwdPxs[i] = fwdPx;
-//        }
-
-        // Allocate the device input data, and copy the
-        // host input data to the device
-
-//        cuMemcpyHtoD(fwdPxInput, Pointer.to(fwdPxs), numOptions * Sizeof.DOUBLE);
-
-        // Allocate device output memory
-
-        //int n, long int timeMs
-        //long int* expiryMs, float vol*, float* fwdPx, float* rate
-        //float* strike, float *g_odata
-        // Set up the kernel parameters: A pointer to an array
-        // of pointers which point to the actual values.
         Pointer kernelParameters = Pointer.to(
-                Pointer.to(new int[]{numOptions}),
-                Pointer.to(new long[]{timeMs}),
+                Pointer.to(numOptionsArr),
+                Pointer.to(timeMsArr),
                 Pointer.to(expiryInput),
                 Pointer.to(volInput),
                 Pointer.to(rateInput),
                 Pointer.to(strikeInput),
                 Pointer.to(isCallInput),
-                Pointer.to(new double[]{fwdPx}),
+                Pointer.to(fwdPxArr),
                 Pointer.to(fairPxOutput)
         );
 
@@ -156,10 +147,7 @@ public class CudaOptionPricer implements OptionPricer {
         cuMemcpyDtoH(Pointer.to(fairPxs), fairPxOutput, numOptions * Sizeof.DOUBLE);
 
         // Verify the result
-        for(int i = 0; i < numOptions; i++)
-        {
-            result.add(fairPxs[i]);
-        }
+        System.arraycopy(fairPxs, 0, result, 0, numOptions);
 
         // Clean up.
 //        cuMemFree(expiryInput);

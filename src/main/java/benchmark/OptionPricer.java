@@ -8,7 +8,6 @@ public interface OptionPricer {
 
     void loadOptions(List<OptionInst> options, double vol, double rate);
 
-    List<Double> price(double fwdPx, long timeMs);
-
+    double[] price(double fwdPx, long timeMs);
 
 }

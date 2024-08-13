@@ -1,7 +1,6 @@
 package benchmark;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BenchMarkingTest {
@@ -65,23 +64,23 @@ public class BenchMarkingTest {
         final long javaDone = System.nanoTime();
         double[] res2 = new double[0];
         for(int i = 0; i < rounds; ++i) {
-//            res2 = cuda.price(fwds[i], nowMs);
+            res2 = cuda.price(fwds[i], nowMs);
         }
         final long end = System.nanoTime();
 
-//        assert res1.length == res2.length;
-//        assert res1.length == options.size();
-//        for(int i = 0; i < options.size(); ++i) {
-//            final var javaRes = res1[i];
-//            final var cudaRes = res2[i];
-//            if(javaRes > 0.000000001 && Math.abs((javaRes - cudaRes) / cudaRes) > 0.001d) {
-//                System.out.printf("Significant Error! Java %f Cuda %f\n", javaRes, cudaRes);
-//            }
-//        }
+        assert res1.length == res2.length;
+        assert res1.length == options.size();
+        for(int i = 0; i < options.size(); ++i) {
+            final var javaRes = res1[i];
+            final var cudaRes = res2[i];
+            if(javaRes > 0.000000001 && Math.abs((javaRes - cudaRes) / cudaRes) > 0.001d) {
+                System.out.printf("Significant Error! Java %f Cuda %f\n", javaRes, cudaRes);
+            }
+        }
 
         if(!warmup) {
-//            System.out.printf("%d,%d,%d\n", options.size(), (javaDone - start) / rounds, (end - javaDone) / rounds);
-            System.out.printf("%d\n", (javaDone - start) / rounds);
+            System.out.printf("%d,%d,%d\n", options.size(), (javaDone - start) / rounds, (end - javaDone) / rounds);
+//            System.out.printf("%d\n", (javaDone - start) / rounds);
 //            System.out.printf("%d\n", (end - javaDone) / rounds);
 
 //            if(options.size() == 256 || options.size() == 8) {

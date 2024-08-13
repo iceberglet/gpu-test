@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e018aa22-ebed-4b29-a258-20578bbbde6e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/JCudaPrint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/BenchMarkingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/BenchMarkingTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/CudaLWJGLOptionPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/CudaLWJGLOptionPricer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/CudaOptionPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/CudaOptionPricer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/JavaOptionPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/JavaOptionPricer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/OpenGLPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/OpenGLPricer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/OptionPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/OptionPricer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/OptionPricingKernel.cu" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/kernels/OptionPricingKernel.cu" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/OptionPricingKernel.ptx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/kernels/OptionPricingKernel.ptx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

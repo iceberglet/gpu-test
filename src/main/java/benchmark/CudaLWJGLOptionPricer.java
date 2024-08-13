@@ -68,6 +68,7 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
     @Override
     public void init() {
         try (MemoryStack stack = stackPush()) {
+            //allocate 2 integer buffer to read from nvrtc
             IntBuffer major = stack.mallocInt(1);
             IntBuffer minor = stack.mallocInt(1);
 
@@ -75,44 +76,42 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
 
             System.out.println("Compiling kernel with NVRTC v" + major.get(0) + "." + minor.get(0));
 
+            //allocate a main memory pointer address
             pp = stack.mallocPointer(1);
 
+            //read cu file content
             final String cu = Files.readString(Path.of("src/main/resources/kernels/OptionPricingKernel.cu"), StandardCharsets.UTF_8);
 
+            //create a cu program, now pp contains pointer address to the program, read it
             checkNVRTC(nvrtcCreateProgram(pp, cu, "OptionPricingKernel.cu", null, null));
             long program = pp.get(0);
 
+            //invoke nvcc to compile cu file into ptx content
             int compilationStatus = nvrtcCompileProgram(program, null);
-            {
-                checkNVRTC(nvrtcGetProgramLogSize(program, pp));
-                if (1L < pp.get(0)) {
-                    ByteBuffer log = stack.malloc((int)pp.get(0) - 1);
 
-                    checkNVRTC(nvrtcGetProgramLog(program, log));
-                    System.err.println("Compilation log:");
-                    System.err.println("----------------");
-                    System.err.println(memASCII(log));
-                }
+            //check compilation results
+            checkNVRTC(nvrtcGetProgramLogSize(program, pp));
+            if (1L < pp.get(0)) {
+                ByteBuffer log = stack.malloc((int)pp.get(0) - 1);
+
+                checkNVRTC(nvrtcGetProgramLog(program, log));
+                System.err.println("Compilation log:");
+                System.err.println("----------------");
+                System.err.println(memASCII(log));
             }
             checkNVRTC(compilationStatus);
 
+            //load ptx results
             checkNVRTC(nvrtcGetPTXSize(program, pp));
             final ByteBuffer PTX = memAlloc((int)pp.get(0));
             checkNVRTC(nvrtcGetPTX(program, PTX));
 
-            //////////////////////
-
-//            PointerBuffer pp = stack.mallocPointer(1);
-            IntBuffer     pi = stack.mallocInt(1);
-
-            // initialize
+            // initialize CUDA device
+            IntBuffer pi = stack.mallocInt(1);
             if (CUDA.isPerThreadDefaultStreamSupported()) {
                 Configuration.CUDA_API_PER_THREAD_DEFAULT_STREAM.set(true);
             }
-
-            System.out.format("- Initializing...\n");
             check(cuInit(0));
-
             check(cuDeviceGetCount(pi));
             if (pi.get(0) == 0) {
                 throw new IllegalStateException("Error: no devices supporting CUDA");
@@ -122,26 +121,25 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
             check(cuDeviceGet(pi, 0));
             int device = pi.get(0);
 
-            // get device name
-            ByteBuffer pb = stack.malloc(100);
-            check(cuDeviceGetName(pb, device));
-            System.out.format("> Using device 0: %s\n", memASCII(memAddress(pb)));
-
-            // get compute capabilities and the device name
-//            IntBuffer minor = stack.mallocInt(1);
-            check(cuDeviceComputeCapability(pi, minor, device));
-            System.out.format("> GPU Device has SM %d.%d compute capability\n", pi.get(0), minor.get(0));
-
-            // get memory size
-            check(cuDeviceTotalMem(pp, device));
-            System.out.format("  Total amount of global memory:   %d bytes\n", pp.get(0));
-            System.out.format("  64-bit Memory Address:           %s\n", (pp.get(0) > 4 * 1024 * 1024 * 1024L) ? "YES" : "NO");
+//            // get device name
+//            ByteBuffer pb = stack.malloc(100);
+//            check(cuDeviceGetName(pb, device));
+//            System.out.format("> Using device 0: %s\n", memASCII(memAddress(pb)));
+//
+//            // get compute capabilities and the device name
+//            check(cuDeviceComputeCapability(pi, minor, device));
+//            System.out.format("> GPU Device has SM %d.%d compute capability\n", pi.get(0), minor.get(0));
+//
+//            // get memory size
+//            check(cuDeviceTotalMem(pp, device));
+//            System.out.format("  Total amount of global memory:   %d bytes\n", pp.get(0));
+//            System.out.format("  64-bit Memory Address:           %s\n", (pp.get(0) > 4 * 1024 * 1024 * 1024L) ? "YES" : "NO");
 
             // create context
             check(cuCtxCreate(pp, 0, device));
             ctx = pp.get(0);
 
-            // load kernel
+            // prepare kernel with compiled ptx data
             check(cuModuleLoadData(pp, PTX));
             long module = pp.get(0);
 
@@ -211,11 +209,12 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
     public double[] price(double fwdPx, long timeMs) {
         try (MemoryStack stack = stackPush()) {
             // grid for kernel: <<<N, 1>>>
+            // block size is ideally multiples of 32 (a warp). Here we use fewer so more SM can be used
             int blockSizeX = 16;
             int gridSizeX = (int)Math.ceil((double)options.size() / blockSizeX);
             check(cuLaunchKernel(function,
                     gridSizeX, 1, 1,  // Nx1x1 blocks
-                    blockSizeX, 1, 1,            // 1x1x1 threads
+                    blockSizeX, 1, 1, // 1x1x1 threads
                     0, 0,
                     // method 1: unpacked (simple, no alignment requirements)
                     stack.pointers(
@@ -244,19 +243,10 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
 
         // copy results to host and report
         fairPxOut.clear();
-//        timeOut.clear();
         check(cuMemcpyDtoH(fairPxOut, cudaFairPxOut));
-//        check(cuMemcpyDtoH(timeOut, cudaTimeOut));
         for (int i = 0; i < options.size(); ++i) {
             result[i] = fairPxOut.get();
-//            time[i] = timeOut.get();
         }
-
-        // finish
-//        check(cuMemFree(deviceA));
-//        check(cuMemFree(deviceB));
-//        check(cuMemFree(deviceC));
-//        check(cuCtxDetach(ctx));
 
         return result;
     }

@@ -28,11 +28,11 @@ public class BenchMarkingTest {
 //        Thread.sleep(20_000L);
         cuda.init();
         java.init();
-        doOneRound(generateOptions(32), true);
+//        doOneRound(generateOptions(32), true);
 //
 //
-        doOneRound(generateOptions(1), false);
-        doOneRound(generateOptions(2), false);
+//        doOneRound(generateOptions(1), false);
+//        doOneRound(generateOptions(2), false);
         doOneRound(generateOptions(4), false);
         doOneRound(generateOptions(8), false);
         doOneRound(generateOptions(16), false);
@@ -44,11 +44,9 @@ public class BenchMarkingTest {
         doOneRound(generateOptions(108), false);
         doOneRound(generateOptions(112), false);
         doOneRound(generateOptions(116), false);
-        doOneRound(generateOptions(117), false);
-        doOneRound(generateOptions(118), false);
-        doOneRound(generateOptions(119), false);
+//        doOneRound(generateOptions(118), false);
         doOneRound(generateOptions(120), false);
-        doOneRound(generateOptions(124), false);
+//        doOneRound(generateOptions(124), false);
         doOneRound(generateOptions(128), false);
         doOneRound(generateOptions(160), false);
         doOneRound(generateOptions(192), false);
@@ -64,13 +62,13 @@ public class BenchMarkingTest {
     private static void doOneRound(final List<OptionInst> options, final boolean warmup) {
         java.loadOptions(options, 0.34, 0.001);
         cuda.loadOptions(options, 0.34, 0.001);
-        final int rounds = 1000;
+        final int rounds = 1;
         final long start = System.nanoTime();
         double[] res1 = new double[0];
         final var fwds = genFwdPx(rounds);
-//        for(int i = 0; i < rounds; ++i) {
-//            res1 = java.price(fwds[i], nowMs);
-//        }
+        for(int i = 0; i < rounds; ++i) {
+            res1 = java.price(fwds[i], nowMs);
+        }
         final long javaDone = System.nanoTime();
         double[] res2 = new double[0];
         for(int i = 0; i < rounds; ++i) {
@@ -79,20 +77,20 @@ public class BenchMarkingTest {
         final long end = System.nanoTime();
         cuda.clear();
 
-//        assert res1.length == res2.length;
-//        assert res1.length == options.size();
-//        for(int i = 0; i < options.size(); ++i) {
-//            final var javaRes = res1[i];
-//            final var cudaRes = res2[i];
-//            if(javaRes > 0.000000001 && Math.abs((javaRes - cudaRes) / cudaRes) > 0.001d) {
-//                System.out.printf("Significant Error! Java %f Cuda %f\n", javaRes, cudaRes);
-//            }
-//        }
+        assert res1.length == res2.length;
+        assert res1.length == options.size();
+        for(int i = 0; i < options.size(); ++i) {
+            final var javaRes = res1[i];
+            final var cudaRes = res2[i];
+            if(javaRes > 0.000000001 && Math.abs((javaRes - cudaRes) / cudaRes) > 0.001d) {
+                System.out.printf("Significant Error! Java %f Cuda %f\n", javaRes, cudaRes);
+            }
+        }
 
         if(!warmup) {
-//            System.out.printf("%d,%d,%d\n", options.size(), (javaDone - start) / rounds, (end - javaDone) / rounds);
+            System.out.printf("%d,%d,%d\n", options.size(), (javaDone - start) / rounds, (end - javaDone) / rounds);
 //            System.out.printf("%d\n", (javaDone - start) / rounds);
-            System.out.printf("%d,%d\n", options.size(), (end - javaDone) / rounds);
+//            System.out.printf("%d,%d\n", options.size(), (end - javaDone) / rounds);
 
 //            if(options.size() == 256 || options.size() == 8) {
 //                for(var t : cuda.getTime()){

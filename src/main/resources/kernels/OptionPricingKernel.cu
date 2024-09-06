@@ -5,21 +5,30 @@ extern "C"
 __global__ void fairPx(
 unsigned int n,
 unsigned long long int timeMs,
-unsigned long long int* expiryMs,
-float* vol, float* rate, float* strike, char* isCall, float fwdPx,
+float fwdPx,
+void* optInputs,
 float *g_odata)
 {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i < n)
     {
-//         printf("%d*%d+%d=%d - timeMs %llu expiryMs %llu \n", blockIdx.x, blockDim.x, threadIdx.x, i, timeMs, expiryMs[i]);
-//         printf("vol %f fwdPx %f strike %f isCall %d \n", vol[i], fwdPx, strike[i], isCall[i]);
+        int strikeOffset = 0;
+        int expiryOffset = strikeOffset + n * sizeof(float);
+        int isCallOffset = expiryOffset + n * sizeof(unsigned long long int);
+        int volOffset = isCallOffset + n * sizeof(char);
+        int rateOffset = volOffset + n * sizeof(float);
+
+//         printf("i %d n %d [%d %d %d %d %d]\n", i, n, strikeOffset, expiryOffset, isCallOffset, volOffset, rateOffset);
+
         float fairPx = 0;
-        unsigned long long int expiry = expiryMs[i];
-        float s = strike[i];
-        float v = vol[i];
-        char isC = isCall[i];
-        float r = rate[i];
+        float s = ((float*)optInputs)[i];
+        unsigned long long int expiry = ((unsigned long long int*)((char*)optInputs + expiryOffset))[i];
+        char isC = ((char*)optInputs + isCallOffset)[i];
+        float v = ((float* )((char*)optInputs + volOffset))[i];
+        float r = ((float* )((char*)optInputs + rateOffset))[i];
+
+//         printf("i %d n %d [%f %f %f %d %llu]\n", i, n, v, s, r, isC, expiry);
+
         for(int j = 0; j < 80; ++j) {
             float tte = (expiry - timeMs) * 1.0 / MS_IN_YEAR;
             float fwdOverStrike = fwdPx / s;

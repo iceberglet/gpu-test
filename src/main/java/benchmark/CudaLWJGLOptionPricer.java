@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static benchmark.OptionLevelInput.bytesNeededFor;
 import static org.lwjgl.cuda.CU.CUDA_SUCCESS;
 import static org.lwjgl.cuda.CU.CU_CTX_SCHED_SPIN;
 import static org.lwjgl.cuda.CU.cuCtxCreate;
@@ -43,7 +44,6 @@ import static org.lwjgl.system.MemoryUtil.memASCII;
 import static org.lwjgl.system.MemoryUtil.memAddress;
 import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memAllocFloat;
-import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memFree;
 
 
@@ -143,20 +143,11 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
     }
 
     List<OptionInst> options;
-    long cudaExpiries;
-    long cudaIsCalls;
-    long cudaStrikes;
-    long cudaVols;
-    long cudaRates;
+    long cudaOptInputs;
     long cudaFairPxOut;
     double[] result;
-
+    ByteBuffer optInputs;
     FloatBuffer fairPxOut;
-    LongBuffer expiries;
-    ByteBuffer isCalls;
-    FloatBuffer strikes;
-    FloatBuffer vols;
-    FloatBuffer rates;
 
     @Override
     public void loadOptions(List<OptionInst> options, double vol, double rate) {
@@ -164,60 +155,41 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
         final int size = options.size();
         result = new double[size];
 
-        expiries = memAllocLong(size);
-        isCalls = memAlloc(size);
-        strikes = memAllocFloat(size);
-        vols = memAllocFloat(size);
-        rates = memAllocFloat(size);
+        optInputs = memAlloc(bytesNeededFor(size));
         fairPxOut = memAllocFloat(size);
+
+        OptionLevelInput input = new OptionLevelInput(optInputs, size);
 
         for (int i = 0; i < options.size(); ++i) {
             final var inst = options.get(i);
-            expiries.put(i, inst.expiryMs);
-            strikes.put(i, (float)inst.strike);
-            isCalls.put(i, (byte) (inst.isCall ? 1 : 0));
-            vols.put(i, (float)vol);
-            rates.put(i, (float)rate);
+            input.setExpiryMs(i, inst.expiryMs);
+            input.setStrike(i, (float)inst.strike);
+            input.setIsCall(i, (byte) (inst.isCall ? 1 : 0));
+            input.setVol(i, (float)vol);
+            input.setRate(i, (float)rate);
         }
 
-        check(cuMemAlloc(pp, Long.BYTES * size));
-        cudaExpiries = pp.get(0);
-        check(cuMemAlloc(pp, Byte.BYTES * size));
-        cudaIsCalls = pp.get(0);
-        check(cuMemAlloc(pp, Float.BYTES * size));
-        cudaStrikes = pp.get(0);
-        check(cuMemAlloc(pp, Float.BYTES * size));
-        cudaVols = pp.get(0);
-        check(cuMemAlloc(pp, Float.BYTES * size));
-        cudaRates = pp.get(0);
+        check(cuMemAlloc(pp, bytesNeededFor(size)));
+        cudaOptInputs = pp.get(0);
         check(cuMemAlloc(pp, Float.BYTES * size));
         cudaFairPxOut = pp.get(0);
-
-        check(cuMemcpyHtoD(cudaExpiries, expiries));
-        check(cuMemcpyHtoD(cudaIsCalls, isCalls));
-        check(cuMemcpyHtoD(cudaStrikes, strikes));
-        check(cuMemcpyHtoD(cudaVols, vols));
-        check(cuMemcpyHtoD(cudaRates, rates));
     }
 
     @Override
     public void clear() {
         memFree(fairPxOut);
-        memFree(expiries);
-        memFree(isCalls);
-        memFree(strikes);
-        memFree(vols);
-        memFree(rates);
-        cuMemFree(cudaExpiries);
-        cuMemFree(cudaIsCalls);
-        cuMemFree(cudaStrikes);
-        cuMemFree(cudaVols);
-        cuMemFree(cudaRates);
         cuMemFree(cudaFairPxOut);
     }
 
     @Override
     public double[] price(double fwdPx, long timeMs) {
+
+        //NOTE: this is just for illustration on the latency for option level inputs
+        //and to illustrate we can cramp different data type into the same level of inputs
+        //in actual impl, we probably will separate runtime and realtime option level inputs
+        //for expiry it should be entirely runtime inputs only
+        check(cuMemcpyHtoD(cudaOptInputs, optInputs));
+
         try (MemoryStack stack = stackPush()) {
             // grid for kernel: <<<N, 1>>>
             // block size is ideally multiples of 32 (a warp). Here we use fewer so more SM can be used
@@ -231,12 +203,8 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
                     stack.pointers(
                             memAddress(stack.ints(options.size())),
                             memAddress(stack.longs(timeMs)),
-                            memAddress(stack.longs(cudaExpiries)),
-                            memAddress(stack.longs(cudaVols)),
-                            memAddress(stack.longs(cudaRates)),
-                            memAddress(stack.longs(cudaStrikes)),
-                            memAddress(stack.longs(cudaIsCalls)),
                             memAddress(stack.floats((float) fwdPx)),
+                            memAddress(stack.longs(cudaOptInputs)),
                             memAddress(stack.longs(cudaFairPxOut))
                     ),
                     null/*,

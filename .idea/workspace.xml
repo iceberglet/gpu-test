@@ -5,8 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e018aa22-ebed-4b29-a258-20578bbbde6e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/BufferTest1.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/BufferTest2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/CudaCtx.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/HelloVulkan.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/SIMDOptionPricer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/SideKick.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/Test2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/TestRead.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/TestSbe.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/kernels/SimpleKernel.cu" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sbe/example-schema.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hs_err_pid13424.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hs_err_pid14200.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hs_err_pid16500.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hs_err_pid5032.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hs_err_pid9668.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/BenchMarkingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/BenchMarkingTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/CudaLWJGLOptionPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/CudaLWJGLOptionPricer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/OptionPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/OptionPricer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,17 +59,25 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.BenchMarkingTest.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.BufferTest1.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.BufferTest2.executor&quot;: &quot;Debug&quot;,
     &quot;Application.HelloCUDA.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.HelloVulkan.executor&quot;: &quot;Debug&quot;,
     &quot;Application.JCudaPrint.executor&quot;: &quot;Debug&quot;,
     &quot;Application.JCudaPrintDeviceInfo.executor&quot;: &quot;Debug&quot;,
     &quot;Application.JCudaVectorAdd.executor&quot;: &quot;Debug&quot;,
     &quot;Application.JCusolverDn_LinearSolver_Direct.executor&quot;: &quot;Debug&quot;,
     &quot;Application.JNvrtcVectorAdd.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SIMDOptionPricer.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SideKick.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.Test2.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.TestRead.executor&quot;: &quot;Debug&quot;,
+    &quot;Maven.jcuda-samples [compile].executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/Dev/jcuda-samples/src&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;
@@ -57,17 +85,16 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Dev\jcuda-samples\src\main\java\benchmark" />
+      <recent name="D:\Dev\jcuda-samples\src\main\java" />
       <recent name="D:\Dev\jcuda-samples\src" />
       <recent name="D:\Dev\jcuda-samples" />
     </key>
   </component>
   <component name="RunManager" selected="Application.BenchMarkingTest">
     <configuration name="BenchMarkingTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="openjdk-22" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="benchmark.BenchMarkingTest" />
       <module name="jcuda-samples" />
-      <option name="VM_PARAMETERS" value="-XX:+UseZGC" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="benchmark.*" />
@@ -78,21 +105,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="HelloCUDA" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="benchmark.HelloCUDA" />
-      <module name="jcuda-samples" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="benchmark.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="JCudaPrint" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="benchmark.JCudaPrint" />
+    <configuration name="SIMDOptionPricer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="benchmark.SIMDOptionPricer" />
       <module name="jcuda-samples" />
       <extension name="coverage">
         <pattern>
@@ -104,12 +118,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="JCudaVectorAdd" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="jcuda.driver.samples.JCudaVectorAdd" />
+    <configuration name="SideKick" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="benchmark.SideKick" />
       <module name="jcuda-samples" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="jcuda.driver.samples.*" />
+          <option name="PATTERN" value="benchmark.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -117,13 +131,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="JCusolverDn_LinearSolver_Direct" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="jcuda.jcusolver.samples.JCusolverDn_LinearSolver_Direct" />
+    <configuration name="Test2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="benchmark.Test2" />
       <module name="jcuda-samples" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/JCudaSamples" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="jcuda.jcusolver.samples.*" />
+          <option name="PATTERN" value="benchmark.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRead" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.lwjgl.system.TestRead" />
+      <module name="jcuda-samples" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="benchmark.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -132,19 +158,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.JCudaPrint" />
-      <item itemvalue="Application.HelloCUDA" />
+      <item itemvalue="Application.SideKick" />
+      <item itemvalue="Application.SIMDOptionPricer" />
       <item itemvalue="Application.BenchMarkingTest" />
-      <item itemvalue="Application.JCudaVectorAdd" />
-      <item itemvalue="Application.JCusolverDn_LinearSolver_Direct" />
+      <item itemvalue="Application.TestRead" />
+      <item itemvalue="Application.Test2" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.BenchMarkingTest" />
-        <item itemvalue="Application.JCudaPrint" />
-        <item itemvalue="Application.HelloCUDA" />
-        <item itemvalue="Application.JCudaVectorAdd" />
-        <item itemvalue="Application.JCusolverDn_LinearSolver_Direct" />
+        <item itemvalue="Application.SideKick" />
+        <item itemvalue="Application.Test2" />
+        <item itemvalue="Application.SIMDOptionPricer" />
+        <item itemvalue="Application.TestRead" />
       </list>
     </recent_temporary>
   </component>
@@ -157,6 +183,7 @@
       <option name="presentableId" value="Default" />
       <updated>1722438538525</updated>
     </task>
+    <option name="searchClosedTasks" value="true" />
     <servers />
   </component>
 </project>

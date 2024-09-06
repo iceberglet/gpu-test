@@ -10,4 +10,8 @@ public interface OptionPricer {
 
     double[] price(double fwdPx, long timeMs);
 
+    default void clear() {
+
+    }
+
 }

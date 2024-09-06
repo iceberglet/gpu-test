@@ -12,17 +12,6 @@
         <lwjgl.version>3.3.4</lwjgl.version>
     </properties>
 
-    <name>JCudaSamples</name>
-    <description>Samples for JCuda</description>
-    <url>http://www.jcuda.org</url>
-
-    <licenses>
-        <license>
-            <name>MIT</name>
-            <url>http://jcuda.org/License.txt</url>
-        </license>
-    </licenses>
-
     <profiles>
         <profile>
             <id>lwjgl-natives-linux-amd64</id>
@@ -78,6 +67,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>uk.co.real-logic</groupId>
+            <artifactId>sbe-all</artifactId>
+            <version>1.27.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
@@ -123,16 +117,6 @@
             <version>0.0.2</version>
         </dependency>
         <dependency>
-            <groupId>de.javagl</groupId>
-            <artifactId>matrixmarketreader</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jcuda</groupId>
-            <artifactId>jcuda-matrix-utils</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.wendykierp</groupId>
             <artifactId>JTransforms</artifactId>
             <version>3.1</version>
@@ -158,6 +142,14 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-vulkan</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-glfw</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-opengl</artifactId>
         </dependency>
         <dependency>
@@ -169,6 +161,11 @@
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-opengl</artifactId>
             <classifier>${lwjgl.natives}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.agrona</groupId>
+            <artifactId>agrona</artifactId>
+            <version>1.22.0</version>
         </dependency>
     </dependencies>
 
@@ -182,6 +179,84 @@
                     <target>21</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includeProjectDependencies>false</includeProjectDependencies>
+                    <includePluginDependencies>true</includePluginDependencies>
+                    <mainClass>uk.co.real_logic.sbe.SbeTool</mainClass>
+                    <systemProperties>
+                        <systemProperty>
+                            <key>sbe.output.dir</key>
+                            <value>${project.build.directory}/generated-sources/java</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>sbe.target.language</key>
+                            <value>Java</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <arguments>
+                        <argument>${project.basedir}/src/main/resources/sbe/example-schema.xml</argument>
+                    </arguments>
+                    <workingDirectory>${project.build.directory}/generated-sources/java</workingDirectory>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>uk.co.real-logic</groupId>
+                        <artifactId>sbe-tool</artifactId>
+                        <version>1.27.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>exec-maven-plugin</artifactId>-->
+<!--                <version>1.6.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>generate-sources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>java</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <includeProjectDependencies>false</includeProjectDependencies>-->
+<!--                    <includePluginDependencies>true</includePluginDependencies>-->
+<!--                    <mainClass>uk.co.real_logic.sbe.SbeTool</mainClass>-->
+<!--                    <systemProperties>-->
+<!--                        <systemProperty>-->
+<!--                            <key>sbe.output.dir</key>-->
+<!--                            <value>${project.build.directory}/generated-sources/cpp</value>-->
+<!--                        </systemProperty>-->
+<!--                        <systemProperty>-->
+<!--                            <key>sbe.target.language</key>-->
+<!--                            <value>C</value>-->
+<!--                        </systemProperty>-->
+<!--                    </systemProperties>-->
+<!--                    <arguments>-->
+<!--                        <argument>${project.basedir}/src/main/resources/sbe/example-schema.xml</argument>-->
+<!--                    </arguments>-->
+<!--                    <workingDirectory>${project.build.directory}/generated-sources/java</workingDirectory>-->
+<!--                </configuration>-->
+<!--                <dependencies>-->
+<!--                    <dependency>-->
+<!--                        <groupId>uk.co.real-logic</groupId>-->
+<!--                        <artifactId>sbe-tool</artifactId>-->
+<!--                        <version>1.27.0</version>-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

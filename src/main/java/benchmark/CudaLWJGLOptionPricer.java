@@ -1,33 +1,25 @@
 package benchmark;
 
-import jcuda.Pointer;
-import jcuda.Sizeof;
-import jcuda.driver.JCudaDriver;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.cuda.CUDA;
 import org.lwjgl.system.Configuration;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.cuda.CU.CUDA_SUCCESS;
+import static org.lwjgl.cuda.CU.CU_CTX_SCHED_SPIN;
 import static org.lwjgl.cuda.CU.cuCtxCreate;
 import static org.lwjgl.cuda.CU.cuCtxDetach;
-import static org.lwjgl.cuda.CU.cuCtxSynchronize;
-import static org.lwjgl.cuda.CU.cuDeviceComputeCapability;
 import static org.lwjgl.cuda.CU.cuDeviceGet;
 import static org.lwjgl.cuda.CU.cuDeviceGetCount;
-import static org.lwjgl.cuda.CU.cuDeviceGetName;
-import static org.lwjgl.cuda.CU.cuDeviceTotalMem;
 import static org.lwjgl.cuda.CU.cuInit;
 import static org.lwjgl.cuda.CU.cuLaunchKernel;
 import static org.lwjgl.cuda.CU.cuMemAlloc;
@@ -50,9 +42,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.system.MemoryUtil.memASCII;
 import static org.lwjgl.system.MemoryUtil.memAddress;
 import static org.lwjgl.system.MemoryUtil.memAlloc;
-import static org.lwjgl.system.MemoryUtil.memAllocDouble;
 import static org.lwjgl.system.MemoryUtil.memAllocFloat;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.system.MemoryUtil.memFree;
 
 
 public class CudaLWJGLOptionPricer implements OptionPricer {
@@ -86,7 +78,7 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
             checkNVRTC(nvrtcCreateProgram(pp, cu, "OptionPricingKernel.cu", null, null));
             long program = pp.get(0);
 
-            //invoke nvcc to compile cu file into ptx content
+            //invoke nvrtc to compile cu file into ptx content
             int compilationStatus = nvrtcCompileProgram(program, null);
 
             //check compilation results
@@ -136,7 +128,7 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
 //            System.out.format("  64-bit Memory Address:           %s\n", (pp.get(0) > 4 * 1024 * 1024 * 1024L) ? "YES" : "NO");
 
             // create context
-            check(cuCtxCreate(pp, 0, device));
+            check(cuCtxCreate(pp, CU_CTX_SCHED_SPIN, device));
             ctx = pp.get(0);
 
             // prepare kernel with compiled ptx data
@@ -157,10 +149,14 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
     long cudaVols;
     long cudaRates;
     long cudaFairPxOut;
-    FloatBuffer fairPxOut;
-    LongBuffer timeOut;
     double[] result;
 
+    FloatBuffer fairPxOut;
+    LongBuffer expiries;
+    ByteBuffer isCalls;
+    FloatBuffer strikes;
+    FloatBuffer vols;
+    FloatBuffer rates;
 
     @Override
     public void loadOptions(List<OptionInst> options, double vol, double rate) {
@@ -168,13 +164,12 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
         final int size = options.size();
         result = new double[size];
 
-        LongBuffer expiries = memAllocLong(size);
-        ByteBuffer isCalls = memAlloc(size);
-        FloatBuffer strikes = memAllocFloat(size);
-        FloatBuffer vols = memAllocFloat(size);
-        FloatBuffer rates = memAllocFloat(size);
+        expiries = memAllocLong(size);
+        isCalls = memAlloc(size);
+        strikes = memAllocFloat(size);
+        vols = memAllocFloat(size);
+        rates = memAllocFloat(size);
         fairPxOut = memAllocFloat(size);
-        timeOut = memAllocLong(size);
 
         for (int i = 0; i < options.size(); ++i) {
             final var inst = options.get(i);
@@ -206,11 +201,27 @@ public class CudaLWJGLOptionPricer implements OptionPricer {
     }
 
     @Override
+    public void clear() {
+        memFree(fairPxOut);
+        memFree(expiries);
+        memFree(isCalls);
+        memFree(strikes);
+        memFree(vols);
+        memFree(rates);
+        cuMemFree(cudaExpiries);
+        cuMemFree(cudaIsCalls);
+        cuMemFree(cudaStrikes);
+        cuMemFree(cudaVols);
+        cuMemFree(cudaRates);
+        cuMemFree(cudaFairPxOut);
+    }
+
+    @Override
     public double[] price(double fwdPx, long timeMs) {
         try (MemoryStack stack = stackPush()) {
             // grid for kernel: <<<N, 1>>>
             // block size is ideally multiples of 32 (a warp). Here we use fewer so more SM can be used
-            int blockSizeX = 16;
+            int blockSizeX = 32;
             int gridSizeX = (int)Math.ceil((double)options.size() / blockSizeX);
             check(cuLaunchKernel(function,
                     gridSizeX, 1, 1,  // Nx1x1 blocks

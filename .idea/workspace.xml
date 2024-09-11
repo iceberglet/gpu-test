@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e018aa22-ebed-4b29-a258-20578bbbde6e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/benchmark/OptionLevelInput.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jcuda-samples.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/BenchMarkingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/BenchMarkingTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/CudaLWJGLOptionPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/CudaLWJGLOptionPricer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/OptionLevelInput.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/OptionLevelInput.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/benchmark/Test2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/benchmark/Test2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/kernels/OptionPricingKernel.cu" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/kernels/OptionPricingKernel.cu" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,33 +38,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.BenchMarkingTest.executor": "Debug",
-    "Application.BufferTest1.executor": "Debug",
-    "Application.BufferTest2.executor": "Debug",
-    "Application.HelloCUDA.executor": "Debug",
-    "Application.HelloVulkan.executor": "Debug",
-    "Application.JCudaPrint.executor": "Debug",
-    "Application.JCudaPrintDeviceInfo.executor": "Debug",
-    "Application.JCudaVectorAdd.executor": "Debug",
-    "Application.JCusolverDn_LinearSolver_Direct.executor": "Debug",
-    "Application.JNvrtcVectorAdd.executor": "Debug",
-    "Application.SIMDOptionPricer.executor": "Debug",
-    "Application.SideKick.executor": "Debug",
-    "Application.Test2.executor": "Debug",
-    "Application.TestRead.executor": "Debug",
-    "Maven.jcuda-samples [compile].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Dev/jcuda-samples/src",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.BenchMarkingTest.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.BufferTest1.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.BufferTest2.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.HelloCUDA.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.HelloVulkan.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.JCudaPrint.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.JCudaPrintDeviceInfo.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.JCudaVectorAdd.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.JCusolverDn_LinearSolver_Direct.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.JNvrtcVectorAdd.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SIMDOptionPricer.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SideKick.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.Test2.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.TestRead.executor&quot;: &quot;Debug&quot;,
+    &quot;Maven.jcuda-samples [compile].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Dev/jcuda-samples/src&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Dev\jcuda-samples\src\main\java\benchmark" />
@@ -79,7 +73,7 @@
       <recent name="D:\Dev\jcuda-samples" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.BenchMarkingTest">
+  <component name="RunManager" selected="Application.Test2">
     <configuration name="BenchMarkingTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="benchmark.BenchMarkingTest" />
       <module name="jcuda-samples" />
@@ -154,9 +148,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Test2" />
         <item itemvalue="Application.BenchMarkingTest" />
         <item itemvalue="Application.SideKick" />
-        <item itemvalue="Application.Test2" />
         <item itemvalue="Application.SIMDOptionPricer" />
         <item itemvalue="Application.TestRead" />
       </list>

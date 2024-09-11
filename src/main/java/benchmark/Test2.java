@@ -37,6 +37,7 @@ import static org.lwjgl.cuda.CU.cuMemcpyDtoHAsync;
 import static org.lwjgl.cuda.CU.cuMemcpyHtoD;
 import static org.lwjgl.cuda.CU.cuModuleGetFunction;
 import static org.lwjgl.cuda.CU.cuModuleLoadData;
+import static org.lwjgl.cuda.CU.ncuMemcpyHtoD;
 import static org.lwjgl.cuda.NVRTC.NVRTC_SUCCESS;
 import static org.lwjgl.cuda.NVRTC.nvrtcCompileProgram;
 import static org.lwjgl.cuda.NVRTC.nvrtcCreateProgram;
@@ -143,7 +144,7 @@ public class Test2 {
             throw new RuntimeException(ex);
         }
 
-        int size = 2;
+        int size = 1;
         output = memAllocFloat(size);
 
         check(cuMemAlloc(pp, size * Float.BYTES));
@@ -152,54 +153,57 @@ public class Test2 {
         cudaOutput = pp.get(0);
 
         final MappedByteBuffer buf = IoUtil.mapExistingFile(new File("D:\\hello"),
-                FileChannel.MapMode.READ_ONLY, "D:\\hello", 0, size * 4);
+                FileChannel.MapMode.READ_ONLY, "D:\\hello", 0, size * 2 * 4);
 
         final var buffer = buf.order(ByteOrder.nativeOrder()).asFloatBuffer();
 
-        check(cuMemcpyHtoD(cudaInput, buffer));
-//        System.out.println(memAddress(buffer) + " " + buffer.get(0) + " " + buffer.get(1));
-//        try (MemoryStack stack = stackPush()) {
-//            // grid for kernel: <<<N, 1>>>
-//            // block size is ideally multiples of 32 (a warp). Here we use fewer so more SM can be used
-//            int blockSizeX = 32;
-//            int gridSizeX = 1;
-//            check(cuLaunchKernel(function,
-//                    gridSizeX, 1, 1,  // Nx1x1 blocks
-//                    blockSizeX, 1, 1, // 1x1x1 threads
-//                    0, 0,
-//                    // method 1: unpacked (simple, no alignment requirements)
-//                    stack.pointers(
-//                            memAddress(stack.ints(1)),
-//                            memAddress(stack.longs(cudaInput)),
-//                            memAddress(stack.longs(cudaOutput))
-//                    ),
-//                    null));
+        check(ncuMemcpyHtoD(cudaInput, memAddress(buffer, 1), 4));
+        System.out.println(memAddress(buffer) + " " + buffer.get(0) + " " + buffer.get(1));
+        try (MemoryStack stack = stackPush()) {
+            // grid for kernel: <<<N, 1>>>
+            // block size is ideally multiples of 32 (a warp). Here we use fewer so more SM can be used
+            int blockSizeX = 32;
+            int gridSizeX = 1;
+            check(cuLaunchKernel(function,
+                    gridSizeX, 1, 1,  // Nx1x1 blocks
+                    blockSizeX, 1, 1, // 1x1x1 threads
+                    0, 0,
+                    // method 1: unpacked (simple, no alignment requirements)
+                    stack.pointers(
+                            memAddress(stack.ints(1)),
+                            memAddress(stack.longs(cudaInput)),
+                            memAddress(stack.longs(cudaOutput))
+                    ),
+                    null));
+        }
+
+        check(cuMemcpyDtoH(output, cudaOutput));
+        System.out.println(output.get(0));
+
+//        IntBuffer flagBuf = memAllocInt(1);
+//        cuDeviceGetAttribute(flagBuf, CU_DEVICE_ATTRIBUTE_IPC_EVENT_SUPPORTED, device);
+//        System.out.println(flagBuf.get(0)); //prints "1"
+//
+//        final int bufSz = CUIPCMemHandle.SIZEOF;
+//        final var handleBuf = IoUtil.mapExistingFile(new File("D:\\handleBuf"),  FileChannel.MapMode.READ_WRITE, "D:\\handleBuf", 0, bufSz);
+////        final var handleBuf = IoUtil.mapNewFile(new File("D:\\handleBuf"),  bufSz, true);
+//
+//
+//        for(int i = 0; i < CUIPCMemHandle.SIZEOF; ++i) {
+//            System.out.print(handleBuf.get(i));
+//            System.out.print(",");
 //        }
-
-        IntBuffer flagBuf = memAllocInt(1);
-        cuDeviceGetAttribute(flagBuf, CU_DEVICE_ATTRIBUTE_IPC_EVENT_SUPPORTED, device);
-        System.out.println(flagBuf.get(0)); //prints "1"
-
-        final int bufSz = CUIPCMemHandle.SIZEOF;
-        final var handleBuf = IoUtil.mapExistingFile(new File("D:\\handleBuf"),  FileChannel.MapMode.READ_WRITE, "D:\\handleBuf", 0, bufSz);
-//        final var handleBuf = IoUtil.mapNewFile(new File("D:\\handleBuf"),  bufSz, true);
-
-
-        for(int i = 0; i < CUIPCMemHandle.SIZEOF; ++i) {
-            System.out.print(handleBuf.get(i));
-            System.out.print(",");
-        }
-        System.out.println();
-
-
-        var handle = CUIPCMemHandle.create(memAddress(handleBuf));
-        check(cuIpcGetMemHandle(handle, cudaInput));
-
-        for(int i = 0; i < CUIPCMemHandle.SIZEOF; ++i) {
-            System.out.print(handleBuf.get(i));
-            System.out.print(",");
-        }
-        System.out.println();
+//        System.out.println();
+//
+//
+//        var handle = CUIPCMemHandle.create(memAddress(handleBuf));
+//        check(cuIpcGetMemHandle(handle, cudaInput));
+//
+//        for(int i = 0; i < CUIPCMemHandle.SIZEOF; ++i) {
+//            System.out.print(handleBuf.get(i));
+//            System.out.print(",");
+//        }
+//        System.out.println();
     }
 
     private static void checkNVRTC(int err) {
